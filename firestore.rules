@@ -1,0 +1,191 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerified() {
+      return isSignedIn() && (request.auth.token.email_verified == true || request.auth.token.firebase.sign_in_provider == 'anonymous');
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        (request.auth.token.email == 'thebaidar2@gmail.com' && request.auth.token.email_verified == true)
+      );
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Validation blueprints
+    function isValidUser(data) {
+      return data.keys().hasAll(['userId', 'email', 'createdAt']) &&
+        data.keys().hasOnly(['userId', 'email', 'displayName', 'createdAt', 'updatedAt']) &&
+        data.userId is string && data.userId.size() <= 128 && data.userId == request.auth.uid &&
+        data.email is string && data.email.size() <= 254 &&
+        (!('displayName' in data) || (data.displayName is string && data.displayName.size() <= 100)) &&
+        data.createdAt is string && data.createdAt.size() <= 40;
+    }
+
+    function isValidRequest(data) {
+      return data.keys().hasAll(['requestId', 'userId', 'fullName', 'email', 'subject', 'message', 'status', 'createdAt']) &&
+        data.keys().hasOnly(['requestId', 'userId', 'fullName', 'email', 'phone', 'subject', 'message', 'status', 'createdAt', 'updatedAt', 'resolvedAt']) &&
+        data.requestId is string && data.requestId.size() <= 64 &&
+        data.userId is string && data.userId.size() <= 128 &&
+        data.fullName is string && data.fullName.size() > 0 && data.fullName.size() <= 100 &&
+        data.email is string && data.email.size() > 0 && data.email.size() <= 254 &&
+        (!('phone' in data) || (data.phone is string && data.phone.size() <= 30)) &&
+        data.subject is string && data.subject.size() > 0 && data.subject.size() <= 200 &&
+        data.message is string && data.message.size() > 0 && data.message.size() <= 4000 &&
+        data.status in ['Submitted', 'Received', 'Under Review', 'Reviewed', 'Responded', 'Resolved', 'Closed'] &&
+        data.createdAt is string && data.createdAt.size() <= 40;
+    }
+
+    function isValidResponse(data) {
+      return data.keys().hasAll(['responseId', 'requestId', 'senderRole', 'senderName', 'message', 'createdAt']) &&
+        data.keys().hasOnly(['responseId', 'requestId', 'senderRole', 'senderName', 'message', 'createdAt']) &&
+        data.responseId is string && data.responseId.size() <= 64 &&
+        data.requestId is string && data.requestId.size() <= 64 &&
+        data.senderRole in ['admin', 'user'] &&
+        data.senderName is string && data.senderName.size() <= 100 &&
+        data.message is string && data.message.size() > 0 && data.message.size() <= 3000 &&
+        data.createdAt is string && data.createdAt.size() <= 40;
+    }
+
+    function isValidWebsiteContent(data) {
+      return data.keys().hasAll(['siteTitle', 'heroHeading', 'heroSubheading', 'aboutText', 'ctaText', 'contactEmail']) &&
+        data.siteTitle is string && data.siteTitle.size() <= 120 &&
+        data.heroHeading is string && data.heroHeading.size() <= 200 &&
+        data.heroSubheading is string && data.heroSubheading.size() <= 600 &&
+        data.aboutText is string && data.aboutText.size() <= 2000 &&
+        data.ctaText is string && data.ctaText.size() <= 60 &&
+        data.contactEmail is string && data.contactEmail.size() <= 254;
+    }
+
+    function isValidSocialLink(data) {
+      return data.keys().hasAll(['id', 'platform', 'url', 'enabled', 'order']) &&
+        data.id is string && data.id.size() <= 64 &&
+        data.platform is string && data.platform.size() <= 50 &&
+        data.url is string && data.url.size() <= 300 &&
+        data.enabled is bool &&
+        data.order is number;
+    }
+
+    // Admins registry collection
+    match /admins/{adminId} {
+      allow get: if isSignedIn() && (request.auth.uid == adminId || isAdmin());
+      allow list, write: if false; // Only configured via privileged setup or root
+    }
+
+    // User collection
+    match /users/{userId} {
+      allow get: if isValidId(userId) && (isOwner(userId) || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isValidId(userId) && isOwner(userId) && isValidUser(incoming());
+      allow update: if isValidId(userId) && (
+        isAdmin() ||
+        (isOwner(userId) && isValidUser(incoming()) &&
+         incoming().userId == existing().userId &&
+         incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'updatedAt']))
+      );
+      allow delete: if isAdmin();
+    }
+
+    // Requests collection
+    match /requests/{requestId} {
+      // Single doc read: only owner or admin
+      allow get: if isValidId(requestId) && (isAdmin() || (isSignedIn() && existing().userId == request.auth.uid));
+      // List query: must filter by userId == request.auth.uid OR be admin
+      allow list: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      // Create: authenticated user submitting their own request
+      allow create: if isValidId(requestId) &&
+        isSignedIn() &&
+        incoming().userId == request.auth.uid &&
+        isValidRequest(incoming()) &&
+        incoming().status == 'Submitted';
+      // Update: Admin can update status/details; User can update message if still 'Submitted'
+      allow update: if isValidId(requestId) && (
+        isAdmin() ||
+        (
+          isSignedIn() &&
+          existing().userId == request.auth.uid &&
+          isValidRequest(incoming()) &&
+          incoming().userId == existing().userId &&
+          incoming().createdAt == existing().createdAt &&
+          existing().status == 'Submitted' &&
+          incoming().diff(existing()).affectedKeys().hasOnly(['message', 'subject', 'phone', 'updatedAt'])
+        )
+      );
+      allow delete: if isValidId(requestId) && isAdmin();
+
+      // Subcollection for dialogue responses
+      match /responses/{responseId} {
+        allow get: if isValidId(responseId) && (
+          isAdmin() ||
+          (isSignedIn() && get(/databases/$(database)/documents/requests/$(requestId)).data.userId == request.auth.uid)
+        );
+        allow list: if isAdmin() ||
+          (isSignedIn() && get(/databases/$(database)/documents/requests/$(requestId)).data.userId == request.auth.uid);
+        allow create: if isValidId(responseId) && isValidResponse(incoming()) && (
+          isAdmin() ||
+          (
+            isSignedIn() &&
+            get(/databases/$(database)/documents/requests/$(requestId)).data.userId == request.auth.uid &&
+            incoming().senderRole == 'user'
+          )
+        );
+        allow update, delete: if isAdmin();
+      }
+    }
+
+    // Website content collection (Public readable, Admin writable)
+    match /website_content/{docId} {
+      allow get: if true;
+      allow list: if true;
+      allow create, update: if isAdmin() && isValidWebsiteContent(incoming());
+      allow delete: if false;
+    }
+
+    // Social links collection (Public readable, Admin writable)
+    match /social_links/{linkId} {
+      allow get: if true;
+      allow list: if true;
+      allow create, update: if isValidId(linkId) && isAdmin() && isValidSocialLink(incoming());
+      allow delete: if isValidId(linkId) && isAdmin();
+    }
+
+    // Audit logs (Admin only)
+    match /audit_logs/{logId} {
+      allow get, list: if isAdmin();
+      allow create: if isAdmin() || isSignedIn();
+      allow update, delete: if false;
+    }
+
+    // Blocked IPs (Admin only)
+    match /blocked_ips/{ip} {
+      allow get, list, write: if isAdmin();
+    }
+  }
+}

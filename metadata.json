@@ -1,0 +1,8 @@
+{
+  "name": "Cyber crime patrol ",
+  "description": "Created  by  Baidar",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

@@ -1,0 +1,317 @@
+{
+  "requests": [
+    {
+      "id": "req-1791442671282-59587",
+      "requestId": "CCPB-2026-59587",
+      "accessTokenHash": "f89aaac4caeb23a5646fa8d5da4ffa16cd90168e963a391a3b2eea136f321869",
+      "userId": "guest-submitted",
+      "fullName": "Jane Doe",
+      "email": "jane.doe@example.com",
+      "phone": "+15551234567",
+      "category": "Unauthorized Access & Account Takeover",
+      "urgency": "Critical Incident",
+      "subject": "Corporate Account Hijack",
+      "message": "Our primary administrative email was hijacked and wire transfer instructions were spoofed.",
+      "status": "Submitted",
+      "createdAt": "2026-10-08T06:57:51.282Z",
+      "ipAddress": "127.0.0.1"
+    }
+  ],
+  "responses": [
+    {
+      "id": "resp-1791442671282-ack",
+      "responseId": "ack-1791442671282",
+      "requestId": "CCPB-2026-59587",
+      "senderRole": "admin",
+      "senderName": "Incident Triage Automated Gate",
+      "message": "Your cyber consultation request has been securely registered in the portal queue. An incident officer will examine the submitted details shortly.",
+      "createdAt": "2026-10-08T06:57:51.282Z"
+    }
+  ],
+  "blockedIps": [
+    {
+      "ipAddress": "198.51.100.42",
+      "reason": "Automated credential stuffing exploit attempt",
+      "blockedAt": "2026-10-06T06:57:17.915Z",
+      "blockedBy": "WAF Automated Defense"
+    }
+  ],
+  "securityLogs": [
+    {
+      "id": "sec-1791536686706-pbhgs",
+      "timestamp": "2026-10-09T09:04:46.706Z",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "curl/7.88.1",
+      "eventType": "ADMIN_LOGIN",
+      "actionTaken": "ALLOW",
+      "details": "Admin logged in successfully: thebaidar2@gmail.com"
+    },
+    {
+      "id": "sec-1791536682075-kebyr",
+      "timestamp": "2026-10-09T09:04:42.075Z",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "curl/7.88.1",
+      "eventType": "SUBMISSION",
+      "actionTaken": "ALLOW",
+      "details": "Cookie consent logged: vis-test-123 (allowed)"
+    },
+    {
+      "id": "sec-1791442685417-4y9pm",
+      "timestamp": "2026-10-08T06:58:05.417Z",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "curl/7.88.1",
+      "eventType": "ADMIN_LOGIN",
+      "actionTaken": "ALLOW",
+      "details": "Admin logged in successfully: thebaidar2@gmail.com"
+    },
+    {
+      "id": "sec-1791442680996-38ike",
+      "timestamp": "2026-10-08T06:58:00.996Z",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "curl/7.88.1",
+      "eventType": "STATUS_CHECK",
+      "actionTaken": "BLOCK",
+      "details": "Unauthorized access attempt on CCPB-2026-59587"
+    },
+    {
+      "id": "sec-1791442677055-199g0",
+      "timestamp": "2026-10-08T06:57:57.055Z",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "curl/7.88.1",
+      "eventType": "STATUS_CHECK",
+      "actionTaken": "ALLOW",
+      "details": "Verified owner tracked request CCPB-2026-59587"
+    },
+    {
+      "id": "sec-1791442671282-94buh",
+      "timestamp": "2026-10-08T06:57:51.282Z",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "curl/7.88.1",
+      "eventType": "SUBMISSION",
+      "actionTaken": "ALLOW",
+      "details": "Registered cyber request CCPB-2026-59587"
+    },
+    {
+      "id": "sec-init-1",
+      "timestamp": "2026-10-08T06:57:17.915Z",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "Security Engine v1.0",
+      "eventType": "WAF_TRIGGER",
+      "actionTaken": "ALLOW",
+      "details": "WAF Gateway and Security Policy Initialized successfully"
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "aud-1791536686706-ypuk7",
+      "timestamp": "2026-10-09T09:04:46.706Z",
+      "actor": "thebaidar2@gmail.com",
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "target": "CONTROL_PANEL",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "aud-1791536682075-3ux3s",
+      "timestamp": "2026-10-09T09:04:42.075Z",
+      "actor": "VISITOR",
+      "action": "COOKIE_CONSENT",
+      "target": "vis-test-123",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS",
+      "metadata": {
+        "status": "allowed",
+        "cookiesCount": 3
+      }
+    },
+    {
+      "id": "aud-1791442685417-1j8ez",
+      "timestamp": "2026-10-08T06:58:05.417Z",
+      "actor": "thebaidar2@gmail.com",
+      "action": "ADMIN_LOGIN_SUCCESS",
+      "target": "CONTROL_PANEL",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS"
+    },
+    {
+      "id": "aud-1791442671282-hle0d",
+      "timestamp": "2026-10-08T06:57:51.282Z",
+      "actor": "jane.doe@example.com",
+      "action": "SUBMIT_REQUEST",
+      "target": "CCPB-2026-59587",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS",
+      "metadata": {
+        "category": "Unauthorized Access & Account Takeover",
+        "urgency": "Critical Incident"
+      }
+    },
+    {
+      "id": "aud-init-1",
+      "timestamp": "2026-10-08T06:57:17.915Z",
+      "actor": "SYSTEM",
+      "action": "PORTAL_INIT",
+      "target": "CYBER CRIME PORTAL BY BAIDAR",
+      "ipAddress": "127.0.0.1",
+      "status": "SUCCESS",
+      "metadata": {
+        "initialServices": 6
+      }
+    }
+  ],
+  "websiteContent": {
+    "siteTitle": "CYBER CRIME PORTAL BY BAIDAR",
+    "heroHeading": "CYBER CRIME PORTAL BY BAIDAR",
+    "heroSubheading": "Confidential, zero-trust digital forensics, incident consultation, and cyber threat investigation portal. Submit security incidents securely and track review proceedings privately.",
+    "aboutText": "The Cyber Crime Portal by Baidar operates as an advanced incident intake and consultation platform for individuals, corporations, and victims of digital crimes. Our mandate covers forensic triage, threat mitigation, digital extortion analysis, unauthorized account access assessment, and guidance through law-enforcement compliance pipelines. All data submitted undergoes cryptographic isolation and strict confidentiality protocols.",
+    "ctaText": "Submit Incident Request",
+    "contactEmail": "intake@cyberportal-baidar.org",
+    "contactPhone": "+1 (800) 282-CYBER / +92 300 0000000",
+    "contactAddress": "Cyber Incident Response Center, Division 01",
+    "pgpKeyFingerprint": "4A9F 82C1 03B4 E687 912D 5D90 3B07 15E8 A211 CC90",
+    "footerText": "© 2026 CYBER CRIME PORTAL BY BAIDAR. Official Cybersecurity Intake & Forensics Service. All Rights Reserved.",
+    "services": [
+      {
+        "id": "srv-1",
+        "title": "Incident Response & Threat Containment",
+        "description": "Immediate triage for active cyber attacks, ongoing ransomware extortion, and system breaches. Rapid isolation recommendations and forensic evidence preservation.",
+        "categoryTag": "Priority 1",
+        "protocolBadge": "ISO 27035 Forensics",
+        "slaTime": "< 2 Hours",
+        "enabled": true
+      },
+      {
+        "id": "srv-2",
+        "title": "Financial Cyber Fraud & Phishing Investigation",
+        "description": "Analysis of unauthorized wire transfers, crypto-draining operations, SIM swapping, and corporate email compromise (BEC). Tracking fraud trails for banking reporting.",
+        "categoryTag": "Financial Crimes",
+        "protocolBadge": "Chain-of-Custody",
+        "slaTime": "< 6 Hours",
+        "enabled": true
+      },
+      {
+        "id": "srv-3",
+        "title": "Digital Blackmail, Stalking & Extortion Consultation",
+        "description": "Support for victims of online blackmail, unauthorized image sharing, targeted harassment, and impersonation. Evidence compilation for cyber regulatory units.",
+        "categoryTag": "Personal Protection",
+        "protocolBadge": "Zero-Knowledge Triage",
+        "slaTime": "< 4 Hours",
+        "enabled": true
+      },
+      {
+        "id": "srv-4",
+        "title": "Data Leak & Unauthorized Account Takeover",
+        "description": "Investigation of compromised enterprise credentials, credential stuffing attacks, and leaked customer databases. Remediation and identity hardening roadmap.",
+        "categoryTag": "Credential Defense",
+        "protocolBadge": "Identity Assurance",
+        "slaTime": "< 8 Hours",
+        "enabled": true
+      },
+      {
+        "id": "srv-5",
+        "title": "Vulnerability Assessment & Hardening Guidance",
+        "description": "Strategic guidance on discovering architectural weaknesses, misconfigured endpoints, and patching attack surfaces before malicious exploitation.",
+        "categoryTag": "Proactive Defense",
+        "protocolBadge": "NIST CSF Aligned",
+        "slaTime": "< 24 Hours",
+        "enabled": true
+      },
+      {
+        "id": "srv-6",
+        "title": "Digital Forensics & Evidence Preservation",
+        "description": "Collection of cryptographic hashes, server access logs, and malicious artifacts adhering to legal admissibility standards for law enforcement submissions.",
+        "categoryTag": "Legal Forensics",
+        "protocolBadge": "RFC 3227 Guidelines",
+        "slaTime": "< 12 Hours",
+        "enabled": true
+      }
+    ],
+    "updatedAt": "2026-10-08T06:57:17.914Z"
+  },
+  "socialLinks": [
+    {
+      "id": "soc-1",
+      "platform": "GitHub",
+      "url": "https://github.com/thebaidar",
+      "handle": "@thebaidar",
+      "enabled": true,
+      "order": 1
+    },
+    {
+      "id": "soc-2",
+      "platform": "X / Twitter",
+      "url": "https://x.com/thebaidar",
+      "handle": "@thebaidar",
+      "enabled": true,
+      "order": 2
+    },
+    {
+      "id": "soc-3",
+      "platform": "LinkedIn",
+      "url": "https://linkedin.com/in/thebaidar",
+      "handle": "Baidar Cybersecurity",
+      "enabled": true,
+      "order": 3
+    },
+    {
+      "id": "soc-4",
+      "platform": "Instagram",
+      "url": "https://instagram.com/thebaidar",
+      "handle": "@thebaidar",
+      "enabled": true,
+      "order": 4
+    },
+    {
+      "id": "soc-5",
+      "platform": "WhatsApp",
+      "url": "https://wa.me/message/cybercrime-baidar",
+      "handle": "Secure Helpline",
+      "enabled": true,
+      "order": 5
+    }
+  ],
+  "cookies": [
+    {
+      "id": "ck-1791536682075-2c503",
+      "visitorId": "vis-test-123",
+      "consentStatus": "allowed",
+      "preferences": {
+        "essential": true,
+        "security": true,
+        "analytics": true,
+        "functional": true
+      },
+      "cookiesSet": [
+        {
+          "name": "_ccpb_consent",
+          "value": "allowed",
+          "purpose": "User cookie authorization state token",
+          "expires": "1 Year"
+        },
+        {
+          "name": "_ccpb_session_id",
+          "value": "vis-test-123",
+          "purpose": "Zero-trust incident intake session verification",
+          "expires": "Session / 1 Year"
+        },
+        {
+          "name": "_ccpb_sec_token",
+          "value": "39c7e313f166c69552d499f190541443",
+          "purpose": "Cryptographic CSRF and anti-tamper security token",
+          "expires": "1 Year"
+        }
+      ],
+      "ipAddress": "127.0.0.1",
+      "userAgent": "curl/7.88.1",
+      "device": "Desktop Workstation",
+      "browser": "Chrome",
+      "createdAt": "2026-10-09T09:04:42.075Z",
+      "updatedAt": "2026-10-09T09:04:42.075Z"
+    }
+  ],
+  "adminAccount": {
+    "username": "thebaidar2@gmail.com",
+    "salt": "7473461f5ea8f6875973f3e7ecf3ea5e",
+    "passwordHash": "9b39bd6154abc32a9338e6f0d16c11c373ac89855e2136981eb80e8fc2f85ac4620f4f21fd404213472c4c765da6d10dae27834c648636e79b067aae8e3b63f1"
+  }
+}
